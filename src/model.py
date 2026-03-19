@@ -2,9 +2,10 @@ class Model:
     def __init__(self, np, pickle, input_dim, lr = 0.01):
         self.np = np
         fan_in = self.np.sqrt(2 / input_dim)
-        self.W1 = self.np.random.randn(input_dim, 64) * fan_in # Входной > скрытый слой
+        # W1 и W2 - веса между входным, скрытым слоем и выходным слоем
+        self.W1 = self.np.random.randn(input_dim, 64) * fan_in
         self.b1 = 0
-        self.W2 = self.np.random.randn(64, 1) * fan_in # Скрытый > выходной слой
+        self.W2 = self.np.random.randn(64, 1) * fan_in
         self.b2 = 0
         self.lr = lr
         self.pickle = pickle
