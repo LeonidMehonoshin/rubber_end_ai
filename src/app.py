@@ -1,3 +1,3 @@
 class App:
-    def __init__(self, model):
+    def __init__(self):
         pass

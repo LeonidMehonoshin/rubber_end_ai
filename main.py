@@ -1,7 +1,12 @@
 import numpy as np
 import pickle
 
-from src.model import Model
+from src.backward import Backward
+from src.forward import Forward
+from src.hidden_layer import Hidden_layer
+from src.loader import Loader
+from src.saver import Saver
+from src.trainer import Trainer
 #from src.app import App
 
 from sklearn.preprocessing import StandardScaler
@@ -35,29 +40,61 @@ features = [
     "tire_type", "pressure_kpa", "usage_conditions"
 ]
 
-# X - данные, Y - факты
-X = np.array([[tire[feature] for feature in features] for tire in data])
-y = np.array([[tire["remaining_life_months"]] for tire in data])
+output_data = np.array([[tire[feature] for feature in features] for tire in data])
+input_data = np.array([[tire["remaining_life_months"]] for tire in data])
 
 # Нормализация размеров данных для более быстрого обучения
 scaler = StandardScaler()
-X_scaled = scaler.fit_transform(X)
+output_data_scaled = scaler.fit_transform(output_data)
 
-X_train, X_test, y_train, y_test = train_test_split(
-    X_scaled, y, test_size=0.2, random_state=42
+output_data_train, output_data_test, input_data_train, input_data_test = train_test_split(
+    output_data_scaled, input_data, test_size = 0.2, random_state = 42
 )
 
+input_size = output_data_train.shape[1]
+fan_in = np.sqrt(2 / input_size)
+
+in_features = input_data.shape[1]
+hidden_features = 8 #из-за маленького кол-ва данных, MSE при большом кол-ве нееронов будет больше
+out_features = output_data.shape[1]
+
+weights = [
+    np.random.randn(in_features, hidden_features) * fan_in,
+    np.random.randn(hidden_features, out_features) * fan_in
+]
+
+biases = [
+    np.zeros(hidden_features),
+    np.zeros(out_features)
+]
+
+print("output data shape:", output_data.shape)
+print("input data shape:", input_data.shape)
+print("W1 shape:", weights[0].shape)
+print("W2 shape:", weights[1].shape)
+print("b1 shape:", biases[0].shape)
+print("b2 shape:", biases[1].shape)
+
 # Обучение модели
-model = Model(np, pickle, input_dim=X_train.shape[1], lr=0.01)
-model.train(X_train, y_train, epochs=1000)
+trainer = Trainer(
+    np,
+    input_data_train, output_data_train,
+    weights, biases,
+    Backward, Forward,
+    Hidden_layer, 0.01,
+    1000
+)
 
-# Предсказание и оценка
-y_pred = model.predict(X_test)
-mse = np.mean((y_pred - y_test) ** 2)
-print(f"Среднеквадратичная ошибка на тесте: {mse:.3f}")
+results = trainer.train()
+for result in results:
+    print(f'Epoch: {result['epoch']}, MSE: {result['mse']}')
 
-# Сохранение весов
-model.save_weights("tire_model_weights.pkl")
+saver = Saver(
+    pickle, weights,
+    biases, 'database.pkl'
+)
+
+saver.save()
 
 #def main(): pass
 #if __name__ == "__main__": main()
