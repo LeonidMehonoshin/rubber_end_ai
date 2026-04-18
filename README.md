@@ -13,7 +13,7 @@
 ## Сборка
 ### Windows
 #### Установите Python 3.13 с официального сайта https://python.org или соберите вручную.
-```ps1
+```powershell
 python -m venv .venv
 .venv\Scripts\activate.ps1
 pip install torch pandas numpy pyYAML scikit-learn
