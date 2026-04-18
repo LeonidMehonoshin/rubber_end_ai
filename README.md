@@ -11,13 +11,15 @@
 
 ## Сборка
 ### Windows
-```powershell
+#### Установите Python 3.13 с официального сайта https://python.org или соберите вручную.
+```ps1
 python -m venv .venv
 .venv\Scripts\activate.ps1
 pip install torch pandas numpy pyYAML scikit-learn
 ```
 
 ### Linux (Debian\RHEL\Arch) или MacOS
+#### Установите Python 3.13 через пакетный менеджер, с официального сайта https://python.org или соберите вручную.
 ```bash
 python -m venv .venv
 source .venv/bin/activate
@@ -26,5 +28,5 @@ pip install torch pandas numpy pyYAML scikit-learn
 
 ### NixOS Linux (пока только вручную через nix-shell, без shell.nix или flake.nix)
 ```bash
-nix-shell -p python3 'python3.withPackages (ps: with ps; [ torch pandas numpy pyyaml scikit-learn ])'
+nix-shell -p python313 'python313.withPackages (ps: with ps; [ torch pandas numpy pyyaml scikit-learn ])'
 ```
