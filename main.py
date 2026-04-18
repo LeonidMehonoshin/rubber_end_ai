@@ -51,20 +51,20 @@ def main():
         trainer.fit(dataset, training_config['max_epochs'], training_config['patience'])
 
     else:
-        # try:
-        checkpoint = torch.load(
+        try:
+            checkpoint = torch.load(
                 paths['checkpoint'],
                 map_location = device,
                 weights_only = False
             )
 
-        # except FileNotFoundError:
-        #     print(f'[ERROR] CheckPoint file not found at: {paths['checkpoint']}')
-        #     return
+        except FileNotFoundError:
+            print(f'[ERROR] CheckPoint file not found at: {paths['checkpoint']}')
+            return
 
-        # except Exception as e:
-        #     print(f'[ERROR] Failed to load checkpoint: {e}')
-        #     return
+        except Exception as e:
+            print(f'[ERROR] Failed to load checkpoint: {e}')
+            return
 
         try:
             with open(paths['input'], 'r', encoding='utf-8') as f:
