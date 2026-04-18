@@ -1,0 +1,9 @@
+paths:
+  dataset: "dataset.csv"
+  checkpoint: "checkpoint.pth"
+  input: "input.yaml"
+
+training:
+  epochs: 10000
+  patience: 20
+  trainMode: True
