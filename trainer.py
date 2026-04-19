@@ -71,7 +71,8 @@ class Trainer:
                     counter += 1
 
                 if counter >= self.__patience:
-                    print(f'{self.__Color.bold}{self.__Color.green}\n[STOP] Early stopping at epoch {epoch}.{self.__Color.end}')
+                    print('\n' * 4)
+                    print(f'{self.__Color.bold}{self.__Color.green}\n[STOP] Early stopping at epoch {epoch} .{self.__Color.end}', end = '')
                     break
 
                 mse = current_loss ** 0.5

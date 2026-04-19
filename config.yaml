@@ -5,6 +5,6 @@ paths:
 
 training:
   trainMode: True
-  epochs: 1500
+  epochs: 5000
   patience: 20
   device: "cpu"
