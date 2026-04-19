@@ -1,5 +1,5 @@
 from color import Color
-print(f'{Color.bold}{Color.green}Init...{Color.end}', end='\r')
+print(f'{Color.bold}{Color.green}Init...\r{Color.end}', end='')
 import os
 import yaml
 import torch
@@ -96,6 +96,6 @@ def main():
         )
 
         result = predictor.predict(user_input)
-        print(f'{Color.bold}{Color.cyan}\n[RESULT]: {result} (km){Color.end}')
+        print(f'{Color.bold}{Color.cyan}[RESULT]: {result} (km){Color.end}')
 
 if __name__ == '__main__': main()
