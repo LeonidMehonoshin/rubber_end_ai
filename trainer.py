@@ -1,75 +1,92 @@
 class Trainer:
-    def __init__(self, model, processor, features_helper, torch, save_path):
+    def __init__(self,
+        model, device,
+        dataset, torch,
+        DatasetTransformer, DatasetDataHelper,
+        pd, sklearn, Color,
+        epochs = 500, patience = 20
+    ):
+        self.__Color = Color
         self.__torch = torch
-        self.__device = self.__torch.device('cpu')
-        self.__model = model
-        self.__processor = processor
-        self.__features_helper = features_helper
-        self.__y_max = 0
+        self.__device = device
+        self.__model = model.to(self.__device)
+        self.__dataset = dataset
+        self.__transformer = DatasetTransformer(DatasetDataHelper, dataset, pd, sklearn)
+        self.__target_name = DatasetDataHelper(dataset).get('target')
+        self.__target_max = 0
         self.__criterion = self.__torch.nn.MSELoss()
         self.__optimizer = self.__torch.optim.Adam(self.__model.parameters(), lr = 0.0001)
-        self.__save_path = save_path
-
-    def fit(self, dataset, epochs = 500, patience = 20):
-        target_name = self.__features_helper.get_target()
-        self.__y_max = dataset[target_name].max()
-        features_only = dataset.drop(columns = [target_name])
-
-        train_np = {
-            'x': self.__processor.fit_transform(features_only),
-            'y': (dataset[target_name].values / self.__y_max).reshape(-1, 1).astype('float32')
+        self.__epochs = epochs
+        self.__patience = patience
+        self.go()
+        self.__checkpoint = {
+            'model_state': self.__model.state_dict(),
+            'processor_state': {
+                'features': self.__transformer.get('features'),
+                'encoders': self.__transformer.get('encoders'),
+                'scaler': self.__transformer.get('scaler'),
+                'medians': self.__transformer.get('medians')
+            },
+            'target_max': self.__target_max
         }
 
+    def go(self):
+        self.__target_max = self.__dataset[self.__target_name].max()
+        target_np = (self.__dataset[self.__target_name].values / self.__target_max).reshape(-1, 1).astype('float32')
+        input_np = self.__transformer.get('transformed')
+
         tensors = {
-            'x': self.__torch.tensor(train_np['x']).float(),
-            'y': self.__torch.tensor(train_np['y']).float()
+            'input': self.__torch.tensor(input_np).to(self.__device),
+            'target': self.__torch.tensor(target_np).to(self.__device)
         }
 
         best_loss = float('inf')
         counter = 0
 
-        print(f'Training started, epochs: {epochs}...')
+        print(
+            f'{self.__Color.bold}{self.__Color.yellow}'
+            f'\rdevice: {self.__device}\n'
+            f'epochs: {self.__epochs}\n'
+            f'patience: {self.__patience}\n'
+            f'{self.__Color.end}'
+        )
 
         try:
-            for epoch in range(epochs + 1):
+            for epoch in range(self.__epochs + 1):
                 self.__model.train()
                 self.__optimizer.zero_grad()
 
-                outputs = self.__model(tensors['x'])
-                loss = self.__criterion(outputs, tensors['y'])
-                current_loss = loss.item()
+                outputs = self.__model(tensors['input'])
+                loss = self.__criterion(outputs, tensors['target'])
 
                 loss.backward()
                 self.__torch.nn.utils.clip_grad_norm_(self.__model.parameters(), max_norm = 1.0)
                 self.__optimizer.step()
 
+                current_loss = loss.item()
                 if current_loss < best_loss:
                     best_loss = current_loss
                     counter = 0
                 else:
                     counter += 1
 
-                if counter >= patience:
-                    print(f'\n[STOP] Early stopping at epoch {epoch}. Loss stopped improving.')
+                if counter >= self.__patience:
+                    print(f'{self.__Color.bold}{self.__Color.green}\n[STOP] Early stopping at epoch {epoch}.{self.__Color.end}')
                     break
 
-                if epoch % 10 == 0:
-                    error_km = self.__torch.sqrt(loss).item() * self.__y_max
-                    print(f'Epoch {epoch}, RMSE: {error_km:.0f} km | Counter: {counter}/{patience}')
+                if epoch % 5 == 0:
+                    mse_km = (current_loss ** 0.5) * self.__target_max
+                    print(
+                        f'{self.__Color.bold}{self.__Color.purple}'
+                        f'Epoch {epoch}\n'
+                        f'autoStopCounter: {counter}\n'
+                        f'MSE_km: {mse_km:.0f} km\n'
+                        f'MSE: {current_loss:.6f}\n'
+                        f'{self.__Color.end}'
+                    )
 
         except KeyboardInterrupt:
-            print('[WARING] Training interrupted by user. ', end = '')
+            print(f'{self.__Color.bold}{self.__Color.yellow}\n[WARNING] Training interrupted. {self.__Color.end}', end='')
 
-        print('Saving current state...')
-        self.__save(self.__save_path)
-
-    def __save(self, filename):
-        checkpoint = {
-            'model_state': self.__model.state_dict(),
-            'processor_state': self.__processor.get_states(),
-            'y_max': self.__y_max,
-            'features_list': self.__features_helper.get_features()
-        }
-
-        self.__torch.save(checkpoint, filename)
-        print(f'Model successfully saved to {filename}')
+    def get(self):
+        return self.__checkpoint
