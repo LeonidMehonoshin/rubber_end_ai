@@ -74,19 +74,26 @@ class Trainer:
                     print(f'{self.__Color.bold}{self.__Color.green}\n[STOP] Early stopping at epoch {epoch}.{self.__Color.end}')
                     break
 
-                if epoch % 5 == 0:
-                    mse_km = (current_loss ** 0.5) * self.__target_max
+                mse = current_loss ** 0.5
+                mse_km = mse * self.__target_max
 
-                    output = (
-                        f'{self.__Color.bold}{self.__Color.purple}'
-                        f'Epoch {epoch}\n'
-                        f'autoStopCounter: {counter}\n'
-                        f'MSE_km: {mse_km:.0f} km\n'
-                        f'MSE: {current_loss:.6f}{self.__Color.end}'
-                    )
+                log_lines = [
+                    f' | Epoch: {epoch}',
+                    f' | AutoStopCounter: {counter}',
+                    f' | MSE_km: {mse_km:0f} km',
+                    f' | MSE: {mse:.10%}'
+                ]
 
-                    print(output)
-                    print(self.__Color.backspace * 4, end='')
+                max_log_len = max(len(line) for line in log_lines)
+
+                output = (
+                    f'{self.__Color.bold}{self.__Color.purple}'
+                    f'{'\n'.join([f'{line.ljust(max_log_len)} | ' for line in log_lines])}'
+                    f'{self.__Color.end}'
+                )
+
+                print(output)
+                print(self.__Color.backspace * 4, end='')
             print('\n' * 4)
 
         except KeyboardInterrupt:
