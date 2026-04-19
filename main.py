@@ -33,7 +33,7 @@ def main():
     }
 
     torch.serialization.add_safe_globals([sklearn.preprocessing.LabelEncoder, sklearn.preprocessing.StandardScaler])
-    device = config['training']['device']
+    device = config['device']
 
     if config['training']['trainMode']:
         print(f'{Color.yellow}{Color.bold}TrainMode = True!{Color.end}')
@@ -52,6 +52,7 @@ def main():
         features_list = helper.get('features')
         model_patcher = ModelPatcher(len(features_list), torch.nn)
         model = model_patcher.get_model_class()()
+        learning_rate = config['training']['learning_rate']
 
         trainer = Trainer(
             model=model,
@@ -64,7 +65,8 @@ def main():
             sklearn=sklearn,
             epochs=config['training']['epochs'],
             patience=config['training']['patience'],
-            Color=Color
+            Color=Color,
+            learning_rate = learning_rate
         )
 
         CheckpointSaver(torch, trainer.get(), paths['checkpoint'], Color)
