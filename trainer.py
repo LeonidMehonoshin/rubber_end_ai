@@ -79,7 +79,7 @@ class Trainer:
 
                     output = (
                         f'{self.__Color.bold}{self.__Color.purple}'
-                        f'Epoch: {epoch}\n'
+                        f'Epoch {epoch}\n'
                         f'autoStopCounter: {counter}\n'
                         f'MSE_km: {mse_km:.0f} km\n'
                         f'MSE: {current_loss:.6f}{self.__Color.end}'
