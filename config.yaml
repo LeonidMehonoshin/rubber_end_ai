@@ -4,7 +4,7 @@ paths:
   input: "input.yaml"
 
 training:
-  epochs: 100
-  patience: 20
   trainMode: True
+  epochs: 1500
+  patience: 20
   device: "cpu"
