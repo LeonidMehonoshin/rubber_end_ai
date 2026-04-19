@@ -17,7 +17,7 @@
 ```powershell
 python -m venv .venv
 .venv\Scripts\activate.ps1
-pip install torch pandas numpy pyYAML scikit-learn
+pip install torch pandas pyYAML scikit-learn
 ```
 
 ### Linux (Debian\RHEL\Arch) или MacOS
@@ -25,10 +25,10 @@ pip install torch pandas numpy pyYAML scikit-learn
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-pip install torch pandas numpy pyYAML scikit-learn
+pip install torch pandas pyYAML scikit-learn
 ```
 
 ### NixOS Linux (пока только вручную через nix-shell, без shell.nix или flake.nix)
 ```bash
-nix-shell -p python313 'python313.withPackages (ps: with ps; [ torch pandas numpy pyyaml scikit-learn ])'
+nix-shell -p python313 'python313.withPackages (ps: with ps; [ torch pandas pyyaml scikit-learn ])'
 ```
