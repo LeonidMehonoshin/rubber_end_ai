@@ -20,7 +20,7 @@ python -m venv .venv
 pip install torch pandas pyYAML scikit-learn
 ```
 
-### Linux (Debian\RHEL\Arch) или MacOS
+### Linux (Debian\RHEL\Arch\Alt\Alpine и их производные) или MacOS
 #### Установите Python 3.13 через пакетный менеджер, с официального сайта https://python.org или соберите вручную.
 ```bash
 python -m venv .venv
