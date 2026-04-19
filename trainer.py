@@ -4,7 +4,7 @@ class Trainer:
         dataset, torch,
         DatasetTransformer, DatasetDataHelper,
         pd, sklearn, Color,
-        epochs = 500, patience = 20
+        epochs = 500, patience = 20, learning_rate = 0.001
     ):
         self.__Color = Color
         self.__torch = torch
@@ -15,7 +15,8 @@ class Trainer:
         self.__target_name = DatasetDataHelper(dataset).get('target')
         self.__target_max = 0
         self.__criterion = self.__torch.nn.MSELoss()
-        self.__optimizer = self.__torch.optim.Adam(self.__model.parameters(), lr = 0.0001)
+        self.__learning_rate = learning_rate
+        self.__optimizer = self.__torch.optim.Adam(self.__model.parameters(), lr = self.__learning_rate)
         self.__epochs = epochs
         self.__patience = patience
         self.go()
@@ -48,6 +49,7 @@ class Trainer:
             f'\rdevice: {self.__device}\n'
             f'epochs: {self.__epochs}\n'
             f'patience: {self.__patience}\n'
+            f'learning_rate: {self.__learning_rate}\n'
             f'{self.__Color.end}'
         )
 
