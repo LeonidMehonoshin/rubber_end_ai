@@ -28,7 +28,8 @@ source .venv/bin/activate
 pip install torch pandas pyYAML scikit-learn
 ```
 
-### NixOS Linux (пока только вручную через nix-shell, без shell.nix или flake.nix)
+### NixOS Linux
 ```bash
-nix-shell -p python313 'python313.withPackages (ps: with ps; [ torch pandas pyyaml scikit-learn ])'
+cd "path/to/rubber_end_ai"
+nix-shell
 ```
