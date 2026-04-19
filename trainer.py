@@ -76,16 +76,21 @@ class Trainer:
 
                 if epoch % 5 == 0:
                     mse_km = (current_loss ** 0.5) * self.__target_max
-                    print(
+
+                    output = (
                         f'{self.__Color.bold}{self.__Color.purple}'
                         f'Epoch {epoch}\n'
                         f'autoStopCounter: {counter}\n'
                         f'MSE_km: {mse_km:.0f} km\n'
-                        f'MSE: {current_loss:.6f}\n'
-                        f'{self.__Color.end}'
+                        f'MSE: {current_loss:.6f}{self.__Color.end}'
                     )
 
+                    print(output)
+                    print(self.__Color.backspace * 4, end='')
+            print('\n' * 4)
+
         except KeyboardInterrupt:
+            print('\n' * 4)
             print(f'{self.__Color.bold}{self.__Color.yellow}\n[WARNING] Training interrupted. {self.__Color.end}', end='')
 
     def get(self):
