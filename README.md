@@ -17,7 +17,7 @@
 ```powershell
 python -m venv .venv
 .venv\Scripts\activate.ps1
-pip install torch pandas pyYAML scikit-learn
+pip install torch pandas pyYAML scikit-learn cryptography
 ```
 
 ### Linux (Debian\RHEL\Arch\Alt\Alpine и их производные) или MacOS
@@ -25,7 +25,7 @@ pip install torch pandas pyYAML scikit-learn
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-pip install torch pandas pyYAML scikit-learn
+pip install torch pandas pyYAML scikit-learn cryptography
 ```
 
 ### NixOS Linux
