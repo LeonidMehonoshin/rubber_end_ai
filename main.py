@@ -1,11 +1,14 @@
 from color import Color
 print(f'{Color.bold}{Color.green}Init...\r{Color.end}', end='')
+
 import os
 import yaml
 import torch
 import pandas as pd
 import sklearn
 import time
+from cryptography.fernet import Fernet
+import io
 
 from model_patcher import ModelPatcher
 from checkpoint_saver import CheckpointSaver
@@ -29,7 +32,8 @@ def main():
     paths = {
         'dataset': os.path.join(base_path, config['paths']['dataset']),
         'checkpoint': os.path.join(base_path, config['paths']['checkpoint']),
-        'input': os.path.join(base_path, config['paths']['input'])
+        'input': os.path.join(base_path, config['paths']['input']),
+        'checkpoint_key': os.path.join(base_path, config['paths']['checkpoint_key'])
     }
 
     torch.serialization.add_safe_globals([sklearn.preprocessing.LabelEncoder, sklearn.preprocessing.StandardScaler])
@@ -69,13 +73,27 @@ def main():
             learning_rate = learning_rate
         )
 
-        CheckpointSaver(torch, trainer.get(), paths['checkpoint'], Color)
+        CheckpointSaver(torch, trainer.get(), paths['checkpoint'], paths['checkpoint_key'], Fernet, io, Color)
 
     else:
         try:
-            checkpoint = torch.load(paths['checkpoint'], map_location = device, weights_only = False)
+            with open(paths['checkpoint_key'], 'rb') as key_file:
+                key = key_file.read()
+
+            with open(paths['checkpoint'], 'rb') as f:
+                encrypted_checkpoint = f.read()
+
+            fernet = Fernet(key)
+            decrypted_checkpoint = fernet.decrypt(encrypted_checkpoint)
+
+            checkpoint = torch.load(io.BytesIO(decrypted_checkpoint), map_location = device, weights_only = False)
+
+        except FileNotFoundError:
+            print(f'{Color.bold}{Color.red}[ERROR] Key or Checkpoint file not found!{Color.end}')
+            return
+
         except Exception as e:
-            print(f'{Color.bold}{Color.red}[ERROR] Failed to load checkpoint: {e}{Color.end}')
+            print(f'{Color.bold}{Color.red}[ERROR] Decryption failed: {e}{Color.end}')
             return
 
         try:
