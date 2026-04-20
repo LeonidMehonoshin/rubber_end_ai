@@ -7,6 +7,7 @@ pkgs.mkShell {
       pandas
       pyyaml
       scikit-learn
+      cryptography
     ]))
   ];
 }
