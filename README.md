@@ -27,18 +27,18 @@ pip install torch pandas pyYAML scikit-learn cryptography
 ### Большинство Linux дистрибутивов
 "Рекомендуется использовать оболчку bash или zsh, но можете использовать и fish или ksh"<br>
 Установите Python 3 (желательно 3.13 или новее) через пакетный менеджер вашей системы, с официального сайта https://python.org или соберите вручную.<br>
-Пример (не забудьте запускать установку с правами super user):
+Пример (не забудьте запускать установку с правами super user):<br>
 Arch
 ```bash
 pacman -S git python python-pip
 ```
 
-Debian\Ubuntu:
+Debian\Ubuntu\RPIOS
 ```bash
 apt install git python3 python3-pip
 ```
 
-RHEL\CENTOS\FEDORA:
+RHEL\CENTOS\Fedora
 ```bash
 dnf install git python3 python3-pip
 ```
