@@ -12,23 +12,71 @@
 
 ## Сборка
 ### Windows
-#### Установите Python 3.13 с официального сайта https://python.org или соберите вручную.
-```powershell
-python -m venv .venv
-.venv\Scripts\activate.ps1
-pip install torch pandas pyYAML scikit-learn cryptography
-```
+1. Установите Python 3 (желательно 3.13 или новее) с официального сайта https://python.org или соберите вручную.<br>
+2. Установите git с официального сайта https://git-scm.com.<br>
+"Вы можете использовать Scoop для удобной установки: https://scoop.sh"<br>
+3. Откройте окно Powershell, клонируйте репозиторий, создайте venv, установите зависимости:
+  ```powershell
+  git clone https://github.com/LeonidMehonoshin/rubber_end_ai.git
+  cd ./rubber_end_ai/
+  python -m venv .venv
+  .venv\Scripts\activate.ps1
+  pip install torch pandas pyYAML scikit-learn cryptography
+  ```
 
-### Linux (Debian\RHEL\Arch\Alt\Alpine и их производные) или MacOS
-#### Установите Python 3.13 через пакетный менеджер, с официального сайта https://python.org или соберите вручную.
+### Большинство Linux дистрибутивов
+"Рекомендуется использовать оболчку bash или zsh, но можете использовать и fish или ksh"<br>
+Установите Python 3 (желательно 3.13 или новее) через пакетный менеджер вашей системы, с официального сайта https://python.org или соберите вручную.<br>
+Пример (не забудьте запускать установку с правами super user):
+    Arch
+    ```bash
+    pacman -S git python python-pip
+    ```
+    
+    Debian\Ubuntu:
+    ```bash
+    apt install git python3 python3-pip
+    ```
+    
+    RHEL\CENTOS\FEDORA:
+    ```bash
+    dnf install git python3 python3-pip
+    ```
+
 ```bash
+git clone https://github.com/LeonidMehonoshin/rubber_end_ai.git
+cd ./rubber_end_ai/
 python -m venv .venv
 source .venv/bin/activate
 pip install torch pandas pyYAML scikit-learn cryptography
 ```
 
-### NixOS Linux
-```bash
-cd "path/to/rubber_end_ai"
-nix-shell
-```
+### MacOS
+"Рекомендуется использовать оболчку bash или zsh, но можете использовать и fish или ksh"<br>
+1. Установите Brew с официального сайта https://brew.sh.<br>
+2. Установите git и python:
+  ```bash
+  brew install python git
+  ```
+
+3. Клонируйте репозиторий с проектом, создайте venv и установите зависимости:
+  ```bash
+  git clone https://github.com/LeonidMehonoshin/rubber_end_ai.git
+  cd ./rubber_end_ai/
+  python -m venv .venv
+  source .venv/bin/activate
+  pip install torch pandas pyYAML scikit-learn cryptography
+  ```
+
+### NixOS
+"Рекомендуется использовать оболчку bash или zsh, но можете использовать и fish или ksh"<br>
+1. Установите git и клонируйте репозиторий:
+  ```bash
+  nix-shell -p git
+  git clone https://github.com/LeonidMehonoshin/rubber_end_ai.git
+  cd ./rubber_end_ai/
+  ```
+2. Войдите в nix-shell с необходимыми установленными зависимостями (они прописаны в файле shell.nix):
+  ```bash
+  nix-shell
+  ```
