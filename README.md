@@ -99,8 +99,6 @@ nix-shell
 ```
 
 ## Скриншоты
-<img width="1545" height="137" alt="image" src="https://github.com/user-attachments/assets/10c152e6-87d3-4ce5-a3c9-115ae0fb9192" />
-
-<img width="1583" height="113" alt="image" src="https://github.com/user-attachments/assets/f2d333cb-94a0-4d17-b93b-00e84947ac81" />
-
+<img width="1545" height="137" alt="image" src="https://github.com/user-attachments/assets/10c152e6-87d3-4ce5-a3c9-115ae0fb9192" /><br>
+<img width="1583" height="113" alt="image" src="https://github.com/user-attachments/assets/f2d333cb-94a0-4d17-b93b-00e84947ac81" /><br>
 <img width="1866" height="462" alt="image" src="https://github.com/user-attachments/assets/4ba0acd0-463f-4ad0-9543-080afd545d6c" />
