@@ -73,6 +73,7 @@ pip install torch pandas pyYAML scikit-learn cryptography
 1. Установите git и клонируйте репозиторий:
 ```bash
 nix-shell -p git
+exit
 git clone https://github.com/LeonidMehonoshin/rubber_end_ai.git
 cd ./rubber_end_ai/
 ```
