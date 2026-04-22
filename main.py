@@ -1,121 +1,101 @@
-from color import Color
-print(f'{Color.bold}{Color.green}Init...\r{Color.end}', end='')
-
-import os
-import yaml
-import torch
-import pandas as pd
-import sklearn
-import time
-from cryptography.fernet import Fernet
-import io
-
-from model_patcher import ModelPatcher
-from checkpoint_saver import CheckpointSaver
-from dataset_data_helper import DatasetDataHelper
-from dataset_transformer import DatasetTransformer
-from input_transformer import InputTransformer
-from trainer import Trainer
-from predictor import Predictor
-
 def main():
+    from color import Color
+    print(f'{Color.bold}{Color.green}Init...\r{Color.end}', end='')
+
+    import os, io, hashlib, shutil, base64
+    import yaml, torch, sklearn
+    import pandas as pd
+    from cryptography.fernet import Fernet
+    from model_patcher import ModelPatcher
+    from checkpoint_saver import CheckpointSaver
+    from dataset_data_helper import DatasetDataHelper
+    from dataset_transformer import DatasetTransformer
+    from input_transformer import InputTransformer
+    from trainer import Trainer
+    from predictor import Predictor
+    from loader import Loader
+    from auth import Auth
+    from user_manager import UserManager
+    from output_manager import OutputManager
+
     base_path = os.path.dirname(os.path.abspath(__file__))
-    config_path = os.path.join(base_path, 'config.yaml')
+    print(f'{Color.bold}    AUTH{Color.end}')
 
-    try:
-        with open(config_path, 'r', encoding='utf-8') as f:
-            config = yaml.safe_load(f)
-    except FileNotFoundError:
-        print(f'{Color.bold}{Color.red}[ERROR] Config file not found at {config_path}!{Color.end}')
-        return
+    while True:
+        username = input('Login: ').strip()
+        if username: break
 
-    paths = {
-        'dataset': os.path.join(base_path, config['paths']['dataset']),
-        'checkpoint': os.path.join(base_path, config['paths']['checkpoint']),
-        'input': os.path.join(base_path, config['paths']['input']),
-        'checkpoint_key': os.path.join(base_path, config['paths']['checkpoint_key'])
-    }
+    while True:
+        password = input('Password: ').strip()
+        if password: break
+
+    user_manager = UserManager(os.path.join(base_path, 'users'), base_path, hashlib, os, Color, shutil, username)
+    paths = user_manager.get_user_paths()
+
+    loader = Loader()
+    config = loader.load_config(paths['config'], yaml, Color)
+
+    for key, value in config['paths'].items():
+        paths[key] = os.path.join(paths['user_root'], value)
 
     torch.serialization.add_safe_globals([sklearn.preprocessing.LabelEncoder, sklearn.preprocessing.StandardScaler])
-    device = config['device']
+    mode = config.get('mode', 'default')
 
-    if config['training']['trainMode']:
-        print(f'{Color.yellow}{Color.bold}TrainMode = True!{Color.end}')
+    if mode == 'decode-out':
+        OutputManager.decode(
+            paths['output'],
+            paths['decoded_output'],
+            password,
+            Fernet,
+            Auth,
+            Color,
+            hashlib,
+            base64
+        )
 
-        for repeat in range(5):
-            for row in [
-                f'{Color.bold}{Color.yellow}    starting!{Color.end}',
-                f'{Color.bold}{Color.red}    STARTING!{Color.end}',
-            ]:
-                print(f'{row} {5-repeat}', end='\r')
-                time.sleep(0.5)
-        print('\r', '             ', '\r', '', end='')
-
+    elif mode == 'train':
+        print(f'{Color.yellow}[INFO] Mode: Train{Color.end}')
         dataset = pd.read_csv(paths['dataset'])
-        helper = DatasetDataHelper(dataset)
-        features_list = helper.get('features')
-        model_patcher = ModelPatcher(len(features_list), torch.nn)
-        model = model_patcher.get_model_class()()
-        learning_rate = config['training']['learning_rate']
+        features = DatasetDataHelper(dataset).get('features')
+        model = ModelPatcher(len(features), torch.nn).get_model_class()()
 
         trainer = Trainer(
-            model=model,
-            device=device,
-            dataset=dataset,
-            torch=torch,
-            DatasetTransformer=DatasetTransformer,
-            DatasetDataHelper=DatasetDataHelper,
-            pd=pd,
-            sklearn=sklearn,
-            epochs=config['training']['epochs'],
-            patience=config['training']['patience'],
-            Color=Color,
-            learning_rate = learning_rate
+            model=model, device=config['device'], dataset=dataset, torch=torch,
+            DatasetTransformer=DatasetTransformer, DatasetDataHelper=DatasetDataHelper,
+            pd=pd, sklearn=sklearn, epochs=config['training']['epochs'],
+            patience=config['training']['patience'], Color=Color,
+            learning_rate=config['training']['learning_rate']
         )
 
         CheckpointSaver(torch, trainer.get(), paths['checkpoint'], paths['checkpoint_key'], Fernet, io, Color)
 
-    else:
-        try:
-            with open(paths['checkpoint_key'], 'rb') as key_file:
-                key = key_file.read()
-
-            with open(paths['checkpoint'], 'rb') as f:
-                encrypted_checkpoint = f.read()
-
-            fernet = Fernet(key)
-            decrypted_checkpoint = fernet.decrypt(encrypted_checkpoint)
-
-            checkpoint = torch.load(io.BytesIO(decrypted_checkpoint), map_location = device, weights_only = False)
-
-        except FileNotFoundError:
-            print(f'{Color.bold}{Color.red}[ERROR] Key or Checkpoint file not found!{Color.end}')
+    elif mode == 'default':
+        if not all(os.path.exists(paths[f]) for f in ['checkpoint', 'checkpoint_key']):
+            print(f'{Color.red}[ERROR] Model not trained.{Color.end}')
             return
 
-        except Exception as e:
-            print(f'{Color.bold}{Color.red}[ERROR] Decryption failed: {e}{Color.end}')
-            return
+        checkpoint = loader.load_checkpoint(paths['checkpoint'], paths['checkpoint_key'], Fernet, io, torch, Color, config['device'])
+        if not checkpoint: return
 
-        try:
-            with open(paths['input'], 'r', encoding='utf-8') as f:
-                user_input = yaml.safe_load(f)
-        except Exception as e:
-            print(f'{Color.bold}{Color.red}[ERROR] Input error: {e}{Color.end}')
-            return
+        user_input = loader.load_input(paths['input'], yaml, Color)
+        features_count = len(checkpoint['processor_state']['features'])
+        model = ModelPatcher(features_count, torch.nn).get_model_class()()
 
-        features_from_ckpt = checkpoint['processor_state']['features']
-        model_patcher = ModelPatcher(len(features_from_ckpt), torch.nn)
-        model = model_patcher.get_model_class()()
-
-        predictor = Predictor(
-            checkpoint=checkpoint,
-            InputTransformer=InputTransformer,
-            model=model,
-            torch=torch,
-            pd=pd
+        predictor = Predictor(checkpoint, InputTransformer, model, torch, pd)
+        res = predictor.predict(user_input)
+        OutputManager.save(
+            paths['output'],
+            user_input,
+            res,
+            password,
+            Fernet,
+            Auth,
+            os,
+            hashlib,
+            base64
         )
 
-        result = predictor.predict(user_input)
-        print(f'{Color.bold}{Color.cyan}[RESULT]: {result} (km){Color.end}')
+        print(f'{Color.cyan}{Color.bold}[RESULT]: {res} km{Color.end}')
+        print(f'{Color.green}[INFO] Result saved to {paths['output']}{Color.end}')
 
 if __name__ == '__main__': main()
