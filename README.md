@@ -32,17 +32,17 @@ pip install torch pandas pyYAML scikit-learn cryptography
 Рекомендуется использовать оболчку bash или zsh, но можете использовать и fish или ksh<br>
 #### 1. Установите Python 3 (желательно 3.13 или новее) через пакетный менеджер вашей системы, с официального сайта https://python.org или соберите вручную.<br>
 Пример (не забудьте запускать установку с правами super user):<br>
-Arch Linux \ Endeavour OS \ Cachy OS \ Manjaro
+Arch Linux | Endeavour OS | Cachy OS | Manjaro
 ```bash
 pacman -S git python
 ```
 
-Ubuntu \ Debian \ Raspberry pi OS \ Linux Mint
+Ubuntu | Debian | Raspberry pi OS | Linux Mint
 ```bash
 apt install git python3
 ```
 
-Fedora \ CENTOS \ RHEL
+Fedora | CENTOS | RHEL
 ```bash
 dnf install git python3
 ```
