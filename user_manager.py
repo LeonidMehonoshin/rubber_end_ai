@@ -23,7 +23,7 @@ class UserManager:
                 if self.__os.path.exists(source):
                     self.__shutil.copy(source, destination)
 
-            print(f'{self.__Color.yellow}[NOTICE] Profile initialized. Please upload your dataset to the directory above and restart.{self.__Color.end}')
+            print(f'{self.__Color.yellow}[NOTICE] Profile initialized. Go to config.yaml for configuration.{self.__Color.end}')
             raise SystemExit
 
         return {'user_root': user_dir, 'config': self.__os.path.join(user_dir, 'config.yaml')}
