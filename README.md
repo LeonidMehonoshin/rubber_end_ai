@@ -34,17 +34,17 @@ pip install torch pandas pyYAML scikit-learn cryptography
 Пример (не забудьте запускать установку с правами super user):<br>
 Arch Linux \ Endeavour OS \ Cachy OS \ Manjaro
 ```bash
-pacman -S git python python-pip
+pacman -S git python
 ```
 
 Ubuntu \ Debian \ Raspberry pi OS \ Linux Mint
 ```bash
-apt install git python3 python3-pip
+apt install git python3
 ```
 
 Fedora \ CENTOS \ RHEL
 ```bash
-dnf install git python3 python3-pip
+dnf install git python3
 ```
 
 #### 2. Клонируйте репозиторий и создайте venv
