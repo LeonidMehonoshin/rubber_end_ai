@@ -1,0 +1,20 @@
+paths:
+  dataset: "dataset.csv"
+  checkpoint: "checkpoint.pth"
+  input: "input.yaml"
+  checkpoint_key: "checkpoint.key"
+  output: "output.log"
+  decoded_output: "decoded_out.log"
+
+# Modes:
+# "train"
+# "default"
+# "decode-out"
+mode: "train"
+
+training:
+  epochs: 1000
+  patience: 20
+  learning_rate: 0.0005
+
+device: "cpu"
