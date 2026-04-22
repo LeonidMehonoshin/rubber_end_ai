@@ -13,10 +13,8 @@ Rubber End AI - это специализированная нейросетев
 
 ## Сборка
 ### Windows
-#### 1. Установите Python 3 (желательно 3.13 или новее) с официального сайта https://python.org или соберите вручную.<br>
-#### 2. Установите git с официального сайта https://git-scm.com.<br>
-Альтернативно вы можете использовать Scoop для удобной установки: https://scoop.sh<br>
-#### 3. Откройте окно Powershell, клонируйте репозиторий, и создайте venv
+#### 1. Установите Python 3 (желательно 3.13 или новее) с официального сайта https://python.org, установите git с официального сайта https://git-scm.com (Альтернативно вы можете использовать Scoop для удобной установки: https://scoop.sh)<br>
+#### 2. Откройте окно Powershell, клонируйте репозиторий, и создайте venv
 ```powershell
 git clone https://github.com/LeonidMehonoshin/rubber_end_ai.git
 cd ./rubber_end_ai/
@@ -24,7 +22,7 @@ python -m venv .venv
 .venv\Scripts\activate.ps1
 ```
 
-#### 4. Установите зависимости
+#### 3. Установите зависимости
 ```powershell
 pip install torch pandas pyYAML scikit-learn cryptography
 ```
