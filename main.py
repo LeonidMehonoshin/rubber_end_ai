@@ -32,8 +32,8 @@ def main():
     user_manager = UserManager(os.path.join(base_path, 'users'), base_path, hashlib, os, Color, shutil, username)
     paths = user_manager.get_user_paths()
 
-    loader = Loader()
-    config = loader.load_config(paths['config'], yaml, Color)
+    loader = Loader(yaml, io, torch, Fernet, Color)
+    config = loader.load_config(paths['config'])
 
     for key, value in config['paths'].items():
         paths[key] = os.path.join(paths['user_root'], value)
@@ -55,7 +55,13 @@ def main():
 
     elif mode == 'train':
         print(f'{Color.yellow}[INFO] Mode: Train{Color.end}')
-        dataset = pd.read_csv(paths['dataset'])
+        try:
+            dataset = pd.read_csv(paths['dataset'])
+
+        except FileNotFoundError:
+            print(f'{Color.bold}{Color.red}[FAILED] Dataset file not found!{Color.end}')
+            return
+
         features = DatasetDataHelper(dataset).get('features')
         model = ModelPatcher(len(features), torch.nn).get_model_class()()
 
@@ -74,10 +80,10 @@ def main():
             print(f'{Color.red}[ERROR] Model not trained.{Color.end}')
             return
 
-        checkpoint = loader.load_checkpoint(paths['checkpoint'], paths['checkpoint_key'], Fernet, io, torch, Color, config['device'])
+        checkpoint = loader.load_checkpoint(paths['checkpoint'], paths['checkpoint_key'], config['device'])
         if not checkpoint: return
 
-        user_input = loader.load_input(paths['input'], yaml, Color)
+        user_input = loader.load_input(paths['input'])
         features_count = len(checkpoint['processor_state']['features'])
         model = ModelPatcher(features_count, torch.nn).get_model_class()()
 
