@@ -9,4 +9,5 @@ class Color:
     bold = '\033[1m'
     underline = '\033[4m'
     end = '\033[0m'
-    backspace = '\033[A'
+    up = '\033[F'
+    clear_line = '\033[K'

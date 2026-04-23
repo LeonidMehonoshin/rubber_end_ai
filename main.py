@@ -40,6 +40,7 @@ def main():
 
     torch.serialization.add_safe_globals([sklearn.preprocessing.LabelEncoder, sklearn.preprocessing.StandardScaler])
     mode = config.get('mode', 'default')
+    print(f'{Color.yellow}[INFO] Mode: {mode}{Color.end}')
 
     if mode == 'decode-out':
         OutputManager.decode(
@@ -54,7 +55,6 @@ def main():
         )
 
     elif mode == 'train':
-        print(f'{Color.yellow}[INFO] Mode: Train{Color.end}')
         try:
             dataset = pd.read_csv(paths['dataset'])
 

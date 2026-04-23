@@ -44,15 +44,8 @@ class Trainer:
         best_loss = float('inf')
         counter = 0
 
-        print(
-            f'{self.__Color.bold}{self.__Color.yellow}'
-            f'\rdevice: {self.__device}\n'
-            f'epochs: {self.__epochs}\n'
-            f'patience: {self.__patience}\n'
-            f'learning_rate: {self.__learning_rate}\n'
-            f'{self.__Color.end}'
-        )
-
+        log_lines = []
+        final_log = ''
         try:
             for epoch in range(self.__epochs + 1):
                 self.__model.train()
@@ -72,36 +65,34 @@ class Trainer:
                 else:
                     counter += 1
 
-                if counter >= self.__patience:
-                    print('\n' * 4)
-                    print(f'{self.__Color.bold}{self.__Color.green}\n[STOP] Early stopping at epoch {epoch} .{self.__Color.end}', end = '')
-                    break
-
                 mse = current_loss ** 0.5
                 mse_km = mse * self.__target_max
 
                 log_lines = [
-                    f' | Epoch: {epoch}',
-                    f' | AutoStopCounter: {counter}',
-                    f' | MSE_km: {mse_km:0f} km',
-                    f' | MSE: {mse:.10%}'
+                    f'  Device: {self.__device}',
+                    f'  Learning_rate: {self.__learning_rate}',
+                    f'  Epoch: {epoch} / {self.__epochs}',
+                    f'  AutoStopCounter: {counter} / {self.__patience}',
+                    f'  MSE_km: {mse_km:0f} km',
+                    f'  MSE: {mse:.10%}'
                 ]
 
-                max_log_len = max(len(line) for line in log_lines)
+                output_logs = f'{self.__Color.bold}{self.__Color.purple}'
+                for line in log_lines:
+                    output_logs += line + self.__Color.clear_line + '\n'
 
-                output = (
-                    f'{self.__Color.bold}{self.__Color.purple}'
-                    f'{'\n'.join([f'{line.ljust(max_log_len)} | ' for line in log_lines])}'
-                    f'{self.__Color.end}'
-                )
+                print(output_logs + self.__Color.end, end = '')
+                print(self.__Color.up * len(log_lines), end = '', flush = True)
 
-                print(output)
-                print(self.__Color.backspace * 4, end='')
-            print('\n' * 4)
+                if counter >= self.__patience:
+                    final_log = f'{self.__Color.bold}{self.__Color.green}\n[STOP] Early stopping at epoch {epoch}.'
+                    break
 
         except KeyboardInterrupt:
-            print('\n' * 4)
-            print(f'{self.__Color.bold}{self.__Color.yellow}\n[WARNING] Training interrupted. {self.__Color.end}', end='')
+            final_log = f'{self.__Color.bold}{self.__Color.yellow}[WARNING] Training interrupted.'
+
+        print('\n' * (len(log_lines) + 1))
+        print(final_log + self.__Color.end)
 
     def get(self):
         return self.__checkpoint
