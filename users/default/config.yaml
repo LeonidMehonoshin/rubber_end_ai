@@ -2,7 +2,7 @@ paths:
   dataset: "dataset.csv"
   checkpoint: "checkpoint.pth"
   input: "input.yaml"
-  checkpoint_key: "checkpoint.key"
+  checkpoint_key: "secret.key"
   output: "output.log"
   decoded_output: "decoded_out.log"
 
