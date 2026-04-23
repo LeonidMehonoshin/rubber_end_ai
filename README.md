@@ -99,7 +99,7 @@ nix-shell
 ```
 
 ## Скриншоты
-<img width="1449" height="130" alt="image" src="https://github.com/user-attachments/assets/81979504-1cf2-4e02-a187-6ed80afc182f" /><br>
-<img width="1545" height="137" alt="image" src="https://github.com/user-attachments/assets/10c152e6-87d3-4ce5-a3c9-115ae0fb9192" /><br>
-<img width="1583" height="113" alt="image" src="https://github.com/user-attachments/assets/f2d333cb-94a0-4d17-b93b-00e84947ac81" /><br>
-<img width="1866" height="462" alt="image" src="https://github.com/user-attachments/assets/4ba0acd0-463f-4ad0-9543-080afd545d6c" />
+<img width="1447" height="129" alt="Screenshot from 2026-04-23 18-14-19" src="https://github.com/user-attachments/assets/3c76bd5f-ac10-4c42-8e6d-366fb36029f7" /><br>
+<img width="1726" height="379" alt="Screenshot from 2026-04-23 18-41-37" src="https://github.com/user-attachments/assets/e1498598-6b0d-449e-9044-1d9e2621deaf" /><br>
+<img width="1551" height="153" alt="Screenshot from 2026-04-23 18-42-45" src="https://github.com/user-attachments/assets/e6719cb6-7610-43e9-a231-3e75f8c2b6e0" /><br>
+<img width="1585" height="131" alt="Screenshot from 2026-04-23 18-43-21" src="https://github.com/user-attachments/assets/970f9e51-7912-44af-adef-551667711068" />
