@@ -2,12 +2,14 @@
 
 pkgs.mkShell {
   buildInputs = [
+    pkgs.python313
     (pkgs.python313.withPackages (ps: with ps; [
       torch
       pandas
       pyyaml
       scikit-learn
       cryptography
+      pyside6
     ]))
   ];
 }
