@@ -139,7 +139,7 @@ class App(QtWidgets.QMainWindow):
                 counter = logs.get('counter', 0)
                 patience_info = f' | StopCounter: {counter}' if counter > 0 else ''
 
-                msg = f'MSE_km: {logs['MSE_km']} | MSE: {logs['MSE']}{patience_info}'
+                msg = f'Epoch: {logs['epoch']} | MSE_km: {logs['MSE_km']} | MSE: {logs['MSE']}{patience_info}'
                 self.__training_log_signal.emit(msg)
 
         self.__trainer_instance.run(
@@ -169,7 +169,7 @@ class App(QtWidgets.QMainWindow):
     def __finalize_training(self, paths):
         self.__training_finished_signal.disconnect()
         if self.__trainer_instance._Trainer__is_running:
-            self.__log_console.append('\n[ WARN ]: Training was interrupted manually.')
+            self.__log_console.append('\n[ WARN ]: Training has been stopped.')
 
         password, ok = QtWidgets.QInputDialog.getText(self, 'Save', 'Set password:', QtWidgets.QLineEdit.Password)
         if ok:
