@@ -71,7 +71,7 @@ class Trainer:
         mse = current_loss ** 0.5
         mse_km = mse * target_max
         return model, counter, best_loss, {
-            'Epoch': epoch,
+            'epoch': epoch,
             'MSE_km': f'{mse_km:.2f} km',
             'MSE': f'{mse:.4%}',
             'counter': counter
