@@ -29,7 +29,7 @@ class Trainer:
         self.__is_running = True
         for epoch in range(epochs + 1):
             model, counter, best_loss, logs = self.__train(
-                model, optimizer, tensors, criterion, best_loss, counter, target_max, torch
+                model, optimizer, tensors, criterion, best_loss, counter, target_max, epoch
             )
 
             if not self.__is_running:
@@ -53,7 +53,7 @@ class Trainer:
         }
         return 'Done'
 
-    def __train(self, model, optimizer, tensors, criterion, best_loss, counter, target_max, torch):
+    def __train(self, model, optimizer, tensors, criterion, best_loss, counter, target_max, epoch = None):
         model.train()
         optimizer.zero_grad()
         outputs = model(tensors['input'])
@@ -71,6 +71,7 @@ class Trainer:
         mse = current_loss ** 0.5
         mse_km = mse * target_max
         return model, counter, best_loss, {
+            'Epoch': epoch,
             'MSE_km': f'{mse_km:.2f} km',
             'MSE': f'{mse:.4%}',
             'counter': counter
