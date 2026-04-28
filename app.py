@@ -84,34 +84,34 @@ class App(QtWidgets.QMainWindow):
 
             layouts['left'].addStretch(1)
 
-            buttons = {
+            self.__buttons = {
                 'menu': QtWidgets.QPushButton('Main Menu'),
                 'start': QtWidgets.QPushButton('START'),
                 'stop': QtWidgets.QPushButton('STOP')
             }
 
-            for button in buttons.values():
+            for button in self.__buttons.values():
                 button.setFixedHeight(100)
                 button.setFixedWidth(200)
                 button.setCursor(QtCore.Qt.PointingHandCursor)
 
-            buttons['stop'].setEnabled(False)
+            self.__buttons['stop'].setEnabled(False)
 
             for button, callbacks in (
-                (buttons['start'], (
-                    lambda: buttons['menu'].setEnabled(False),
-                    lambda: buttons['start'].setEnabled(False),
-                    lambda: buttons['stop'].setEnabled(True),
+                (self.__buttons['start'], (
+                    lambda: self.__buttons['menu'].setEnabled(False),
+                    lambda: self.__buttons['start'].setEnabled(False),
+                    lambda: self.__buttons['stop'].setEnabled(True),
                     lambda: self.__run_training(options, paths)
                 )),
-                (buttons['stop'], (
-                    lambda: buttons['menu'].setEnabled(True),
-                    lambda: buttons['start'].setEnabled(True),
-                    lambda: buttons['stop'].setEnabled(False),
+                (self.__buttons['stop'], (
+                    lambda: self.__buttons['menu'].setEnabled(True),
+                    lambda: self.__buttons['start'].setEnabled(True),
+                    lambda: self.__buttons['stop'].setEnabled(False),
                     self.__trainer_instance.stop,
                     lambda: self.__log_console.append('\n[ WARN ]: Stop...')
                 )),
-                (buttons['menu'], (self.__show_mode_selection,))
+                (self.__buttons['menu'], (self.__show_mode_selection,))
             ):
                 if not isinstance(callbacks, (list, tuple)): callbacks = [callbacks]
                 for callback in callbacks:  button.clicked.connect(callback)
@@ -170,6 +170,9 @@ class App(QtWidgets.QMainWindow):
         self.__training_finished_signal.disconnect()
         if self.__trainer_instance._Trainer__is_running:
             self.__log_console.append('\n[ WARN ]: Training has been stopped.')
+            self.__buttons['menu'].setEnabled(True)
+            self.__buttons['start'].setEnabled(True)
+            self.__buttons['stop'].setEnabled(False)
 
         password, ok = QtWidgets.QInputDialog.getText(self, 'Save', 'Set password:', QtWidgets.QLineEdit.Password)
         if ok:
