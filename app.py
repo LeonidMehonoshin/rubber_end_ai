@@ -174,13 +174,14 @@ class App(QtWidgets.QMainWindow):
             self.__buttons['start'].setEnabled(True)
             self.__buttons['stop'].setEnabled(False)
 
-        password, ok = QtWidgets.QInputDialog.getText(self, 'Save', 'Set password:', QtWidgets.QLineEdit.Password)
+        password, ok = QtWidgets.QInputDialog.getText(self, 'RAI: Save', 'Set password:', QtWidgets.QLineEdit.Password)
         if ok:
             key = RAI.KeyGen(password).get()
             RAI.Checkpoint.save(self.__trainer_instance.get(), key, paths['checkpoint'])
             self.__log_console.append(f'\n[ SUCCESS ]: Saved to {paths["checkpoint"]}')
 
     def __default_mode_window(self):
+        self.setWindowTitle('Rubber End AI :)')
         password, ok = QtWidgets.QInputDialog.getText(self, 'RAI: Password', 'Enter password:', QtWidgets.QLineEdit.Password)
         if not ok or not password: return
 
