@@ -96,6 +96,10 @@ class App(QtWidgets.QMainWindow):
                 button.setCursor(QtCore.Qt.PointingHandCursor)
 
             self.__buttons['stop'].setEnabled(False)
+            def handle_stop():
+                self.__buttons['stop'].setEnabled(False)
+                self.__log_console.append('\n[ WAIT ]: Stopping thread...')
+                self.__trainer_instance.stop()
 
             for button, callbacks in (
                 (self.__buttons['start'], (
@@ -108,7 +112,7 @@ class App(QtWidgets.QMainWindow):
                     lambda: self.__buttons['menu'].setEnabled(True),
                     lambda: self.__buttons['start'].setEnabled(True),
                     lambda: self.__buttons['stop'].setEnabled(False),
-                    self.__trainer_instance.stop,
+                    handle_stop,
                     lambda: self.__log_console.append('\n[ WARN ]: Stop...')
                 )),
                 (self.__buttons['menu'], (self.__show_mode_selection,))
@@ -151,10 +155,11 @@ class App(QtWidgets.QMainWindow):
             log_callback = update_logs
         )
 
-        self.__training_log_signal.disconnect()
         self.__training_finished_signal.emit(paths)
 
     def __run_training(self, options, paths):
+        if hasattr(self, '_training_thread') and self._training_thread.is_alive(): return
+
         QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
         dataset = RAI.Loader.load_dataset(paths['dataset'])
         QtWidgets.QApplication.restoreOverrideCursor()
@@ -163,11 +168,22 @@ class App(QtWidgets.QMainWindow):
         self.__training_finished_signal.connect(self.__finalize_training)
 
         import threading
-        thread = threading.Thread(target=self.__start_heavy_training, args=(options, paths, dataset), daemon=True)
-        thread.start()
+        self.__training_thread = threading.Thread(
+            target = self.__start_heavy_training,
+            args = (options, paths, dataset),
+            daemon = True
+        )
+        self.__training_thread.start()
 
     def __finalize_training(self, paths):
-        self.__training_finished_signal.disconnect()
+        try:
+            for signal in (
+                self.__training_log_signal,
+                self.__training_finished_signal
+            ):
+                signal.disconnect()
+        except RuntimeError: pass
+
         if self.__trainer_instance._Trainer__is_running:
             self.__log_console.append('\n[ WARN ]: Training has been stopped.')
             self.__buttons['menu'].setEnabled(True)
@@ -226,13 +242,13 @@ class App(QtWidgets.QMainWindow):
 
     def __on_predict_clicked(self, checkpoint_path, password):
         QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.WaitCursor)
-        import yaml
 
         try:
             key = RAI.KeyGen(password).get()
             checkpoint = RAI.Checkpoint.load(checkpoint_path, key, 'cpu')
 
             yaml_text = self.__input_text.toPlainText()
+            import yaml
             user_input_data = yaml.safe_load(yaml_text)
 
             predictor = RAI.Predictor(checkpoint, user_input_data)
