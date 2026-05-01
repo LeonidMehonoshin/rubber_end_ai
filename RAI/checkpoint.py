@@ -12,6 +12,7 @@ class Checkpoint:
         checkpoint = torch.load(io.BytesIO(decrypted_checkpoint), map_location = device, weights_only = False)
         return checkpoint
 
+    @staticmethod
     def save(checkpoint, key, filename):
         import io, torch
         from cryptography.fernet import Fernet

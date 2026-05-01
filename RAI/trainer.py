@@ -62,6 +62,8 @@ class Trainer:
         optimizer.step()
 
         current_loss = loss.item()
+        import torch
+        if torch.isnan(loss): self.stop()
         if current_loss < best_loss:
             best_loss = current_loss
             counter = 0
