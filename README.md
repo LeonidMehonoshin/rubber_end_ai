@@ -13,7 +13,7 @@ Rubber End AI - это специализированная нейросетев
 #### 2. Откройте окно Powershell, клонируйте репозиторий, и создайте venv
 ```powershell
 git clone https://github.com/LeonidMehonoshin/rubber_end_ai.git
-cd ./rubber_end_ai/
+cd rubber_end_ai\
 python -m venv .venv
 .venv\Scripts\activate.ps1
 ```
