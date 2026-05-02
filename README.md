@@ -95,9 +95,9 @@ nix-shell
 
 ## Скриншоты
 <img width="960" height="540" alt="Screenshot from 2026-05-02 13-10-39" src="https://github.com/user-attachments/assets/5c436b6f-0d13-41dd-9b38-a430ab693783" />
-
+<br>
 <img width="1869" height="958" alt="Screenshot from 2026-05-02 13-11-07" src="https://github.com/user-attachments/assets/eed0c24c-7757-492b-9f83-2234329bb1a3" />
-
+<br>
 <img width="1869" height="958" alt="Screenshot from 2026-05-02 13-11-39" src="https://github.com/user-attachments/assets/7c2ab3b1-7784-45d7-b91e-efe5a5b59189" />
-
+<br>
 <img width="470" height="142" alt="Screenshot from 2026-05-02 13-12-17" src="https://github.com/user-attachments/assets/bf3dc5e5-149f-455b-bcc7-df4c27d253dd" />
